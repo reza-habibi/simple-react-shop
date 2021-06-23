@@ -4,28 +4,52 @@ import Header from "./Components/Header/Header";
 import Filters from "./Components/Filters/Filters";
 import Products from "./Components/Products/Products";
 import Basket from "./Components/Basket/Basket";
-import  productList  from "./data/data";
-
+import productList from "./data/data";
+import Modals from "./Components/Modal/Modal";
 function App() {
-  const [filteredProductList, setFilteredProductList] = useState(productList.sort((a, b) => a.price - b.price));
+
+  const [show, setShow] = useState({
+    show: false,
+  });
+
+  let showModal = () => {
+    setShow({
+      show: true,
+    });
+  };
+
+  let hideModal = () => {
+    setShow({
+      show: false,
+    });
+  };
+
+  const [dataModal, setDataModal] = useState({
+    imgSrc: "",
+    id: "",
+    title: "",
+    price: "",
+    quantity: "",
+    sizes: [],
+  });
+  const [filteredProductList, setFilteredProductList] = useState(
+    productList.sort((a, b) => a.price - b.price)
+  );
 
   const [cart, setCart] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
-  const sidebar=document.getElementById('sidebar')
-
-
+  const sidebar = document.getElementById("sidebar");
   const [filter, setFilter] = useState({
     price: "lowest",
-    size: "ALL"
-  })
-    
+    size: "ALL",
+  });
+
   useEffect(() => {
     total();
-    cart.map((product)=>console.log(product.quantity ))
+    cart.map((product) => console.log(product.quantity));
   }, [cart]);
 
   useEffect(() => {
-
     let arr = [];
 
     label: for (let i = 0; i < productList.length; i++) {
@@ -37,68 +61,82 @@ function App() {
       }
     }
 
-
     if (filter.price === "lowest") {
       setFilteredProductList(arr.sort((a, b) => a.price - b.price));
-    }
-    else {
+    } else {
       setFilteredProductList(arr.sort((a, b) => b.price - a.price));
     }
-
-  }, [filter])
+  }, [filter]);
 
   const total = () => {
     let totalVal = 0;
     for (let i = 0; i < cart.length; i++) {
-      totalVal += cart[i].price*cart[i].quantity;
+      totalVal += cart[i].price * cart[i].quantity;
     }
     setCartTotal(totalVal);
   };
 
   const addToCart = (product) => {
-    if (cart.some(item => item.id === product.id)) {
-      product.quantity+=1;
-      setCart([...cart])
-    }else{
+    if (cart.some((item) => item.id === product.id)) {
+      product.quantity += 1;
+      setCart([...cart]);
+    } else {
       setCart([...cart, product]);
     }
-
   };
-  if(cart.length!==0){
-    sidebar.style.display='block'
+  if (cart.length !== 0) {
+    sidebar.style.display = "block";
   }
   const removeFromCart = (product) => {
     let filteredBasket = [...cart];
-    filteredBasket = filteredBasket.filter((cartItem) => cartItem.id !== product.id);
+    filteredBasket = filteredBasket.filter(
+      (cartItem) => cartItem.id !== product.id
+    );
     setCart(filteredBasket);
-    if (filteredBasket.length===0) {
-    sidebar.style.display='none'
+    if (filteredBasket.length === 0) {
+      sidebar.style.display = "none";
     }
-
   };
-
- 
-
-
 
   return (
     <div className="grid-container">
+      {show.show && (
+        <Modals
+          show={showModal}
+          hide={hideModal}
+          dataModal={dataModal}
+          cardList={cart}
+          setCardList={setCart}
+        />
+      )}
       <Header />
 
       <main>
         <div className="content">
           <div className="main">
-            <Filters filter={filter} setFilter={setFilter} len={filteredProductList.length} />
+            <Filters
+              filter={filter}
+              setFilter={setFilter}
+              len={filteredProductList.length}
+            />
 
             <div>
               <ul className="react-reveal products">
                 {filteredProductList.map((product) => (
-                  <li key={product.id}>
+                  <li
+                    key={product.id}
+                    className=" border h-100 mx-5 shadow p-3 mb-5 bg-white rounded"
+                  >
                     <Products
                       imgSrc={product.imgSrc}
                       title={product.title}
                       price={product.price}
                       onClick={() => addToCart(product)}
+                      setShow={() => setShow(true)}
+                      show={showModal}
+                      hide={hideModal}
+                      dataModal={dataModal}
+                      setDataModal={setDataModal}
                     />
                   </li>
                 ))}
@@ -120,7 +158,7 @@ function App() {
                         imgSrc={item.imgSrc}
                         title={item.title}
                         price={item.price}
-                        quantity={item.quantity  }
+                        quantity={item.quantity}
                         onClick={() => removeFromCart(item)}
                       />
                     </li>
