@@ -26,12 +26,13 @@ function App() {
 
   const [dataModal, setDataModal] = useState({
     imgSrc: "",
-    id: "",
+    id: 0,
     title: "",
-    price: "",
-    quantity: "",
+    price: 0,
+    quantity: 1,
     sizes: [],
   });
+
   const [filteredProductList, setFilteredProductList] = useState(
     productList.sort((a, b) => a.price - b.price)
   );
@@ -46,7 +47,6 @@ function App() {
 
   useEffect(() => {
     total();
-    cart.map((product) => console.log(product.quantity));
   }, [cart]);
 
   useEffect(() => {
@@ -74,6 +74,8 @@ function App() {
       totalVal += cart[i].price * cart[i].quantity;
     }
     setCartTotal(totalVal);
+
+    console.log(cart)
   };
 
   const addToCart = (product) => {
@@ -128,9 +130,11 @@ function App() {
                     className=" border h-100 mx-5 shadow p-3 mb-5 bg-white rounded"
                   >
                     <Products
+                      id={product.id}
                       imgSrc={product.imgSrc}
                       title={product.title}
                       price={product.price}
+                      quantity={product.quantity}
                       onClick={() => addToCart(product)}
                       setShow={() => setShow(true)}
                       show={showModal}

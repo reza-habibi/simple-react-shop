@@ -1,7 +1,7 @@
 import React from "react";
 import "./products.css";
 
-function Products({id, imgSrc = "", title = "", price = 0, onClick,quantity, show, hide, dataModal, setDataModal }) {
+function Products({id, imgSrc = "", title = "", price = 0,quantity, onClick, show, setDataModal }) {
   function showModal() {
     setDataModal({
       imgSrc: imgSrc,
@@ -12,6 +12,7 @@ function Products({id, imgSrc = "", title = "", price = 0, onClick,quantity, sho
     });
     show();
   }
+
   return (
     <div className="product ">
       <a href="!#">

@@ -2,29 +2,24 @@ import React from 'react'
 import './modal.css'
 
  const Modals = ({  hide, dataModal, cardList, setCardList }) => {
-
+    console.log(dataModal)
     function added() {
 
-
-        let item = cardList.find((i) => i.id === dataModal.id)
-        if (item) {
-            let arr = [...cardList];
-            let index = arr.findIndex((i) => i.id === dataModal.id);
-            arr[index].count++;
-            setCardList(arr);
+        if (cardList.some((item) => item.id === dataModal.id)) {
+            dataModal.quantity += 1;
+            setCardList([...cardList]);
             hide();
-        }
-        else {
-            setCardList([...cardList, { id: dataModal.id, imgSrc: dataModal.imgSrc, title: dataModal.title, price: dataModal.price, count: 1 }])
+          } else {
+            setCardList([...cardList, dataModal]);
             hide();
-        }
+          }
 
 
     }
 
 
     return (
-        <div className="modal">
+        <div key={dataModal.id} className="modal">
             <div className="mains">
                 <div className="section-left">
                     <img src={dataModal.imgSrc} alt="" />
