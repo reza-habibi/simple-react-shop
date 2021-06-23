@@ -4,19 +4,48 @@ import Header from "./Components/Header/Header";
 import Filters from "./Components/Filters/Filters";
 import Products from "./Components/Products/Products";
 import Basket from "./Components/Basket/Basket";
-import { productList } from "./data/data";
+import  productList  from "./data/data";
 
 function App() {
-  const [filteredProductList, setFilteredProductList] = useState(productList);
+  const [filteredProductList, setFilteredProductList] = useState(productList.sort((a, b) => a.price - b.price));
 
   const [cart, setCart] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
   const sidebar=document.getElementById('sidebar')
 
+
+  const [filter, setFilter] = useState({
+    price: "lowest",
+    size: "ALL"
+  })
+    
   useEffect(() => {
     total();
     cart.map((product)=>console.log(product.quantity ))
   }, [cart]);
+
+  useEffect(() => {
+
+    let arr = [];
+
+    label: for (let i = 0; i < productList.length; i++) {
+      for (let h = 0; h < productList[i].size.length; h++) {
+        if (productList[i].size[h] === filter.size) {
+          arr.push(productList[i]);
+          continue label;
+        }
+      }
+    }
+
+
+    if (filter.price === "lowest") {
+      setFilteredProductList(arr.sort((a, b) => a.price - b.price));
+    }
+    else {
+      setFilteredProductList(arr.sort((a, b) => b.price - a.price));
+    }
+
+  }, [filter])
 
   const total = () => {
     let totalVal = 0;
@@ -59,7 +88,7 @@ function App() {
       <main>
         <div className="content">
           <div className="main">
-            <Filters />
+            <Filters filter={filter} setFilter={setFilter} len={filteredProductList.length} />
 
             <div>
               <ul className="react-reveal products">

@@ -1,21 +1,24 @@
 import React from "react";
 import "./filters.css";
-function Filters() {
+function Filters({ filter, setFilter, len }) {
+  function change(e) {
+    setFilter({ ...filter, [e.target.name]: e.target.value });
+  }
+
   return (
     <div className="filter">
-      <div className="filter-result">6 Products</div>
-      <div className="filter-sort">
-        Order{" "}
-        <select>
-          <option value="latest">Latest</option>
+      <div>{len} Products</div>
+      <div>
+        <span>Order </span>
+        <select onChange={change} value={filter.price} name="price" id="">
           <option value="lowest">Lowest</option>
           <option value="highest">Highest</option>
         </select>
       </div>
-      <div className="filter-size">
-        Filter{" "}
-        <select>
-          <option value="">All</option>
+      <div>
+        <span>Filter </span>
+        <select name="size" onChange={change} value={filter.size} id="">
+          <option value="ALL">All</option>
           <option value="XS">XS</option>
           <option value="S">S</option>
           <option value="M">M</option>
